@@ -18,7 +18,24 @@ pipeline {
             }
         }
 
+	stage('Docker Build'){
+	    steps {
+		echo 'Building Docker Image'
+		sh ' docker build -t myapp:${BUILD_NUMBER} '
+            }
+	}
+
     }
+	post {
+	   success {
+		echo 'CI pipeline completed Successfully'
+	   }
+
+	   failure {
+		echo 'CI pipeline failed
+	   }
+
+	}
 
 }
 
