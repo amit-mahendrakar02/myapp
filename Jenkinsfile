@@ -33,18 +33,32 @@ pipeline {
 	}
 
 	stage('Push to Docker Hub') {
-            steps {
-                withDockerRegistry(
-                    credentialsId: 'dockerhub-credentials',
-                    url: 'https://index.docker.io/v1/'
-                ) {
-                    sh '''
-                        docker push ${IMAGE_NAME}:${BUILD_NUMBER}
-                        docker push ${IMAGE_NAME}:latest
-                    '''
-                }
-            }
+    steps {
+        withCredentials([
+            usernamePassword(
+                credentialsId: 'dockerhub-credentials',
+                usernameVariable: 'DOCKER_USERNAME',
+                passwordVariable: 'DOCKER_PASSWORD'
+            )
+        ]) {
+            sh '''
+                set -e
+
+                echo "Pushing ${IMAGE_NAME}:${BUILD_NUMBER}"
+
+                echo "$DOCKER_PASSWORD" | docker login \
+                    -u "$DOCKER_USERNAME" \
+                    --password-stdin
+
+                docker push "${IMAGE_NAME}:${BUILD_NUMBER}"
+                docker push "${IMAGE_NAME}:latest"
+
+                docker logout
+            '''
         }
+    }
+}
+
 	
 	stage('Deploy to Kubernetes') {
 		steps {
