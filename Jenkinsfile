@@ -65,8 +65,8 @@ pipeline {
 		echo 'Deploying application to Kubernetes'
 		
 		sh '''
-			kubectl -f apply k8s/deployment.yml
-			kubectl -f apply k8s/service.yml
+			kubectl apply -f k8s/deployment.yml
+			kubectl apply -f k8s/service.yml
 
 			kubectl rollout restart deployment/myapp
 			kubectl rollout status deployment/myapp
@@ -76,13 +76,13 @@ pipeline {
 
     }
 	 post {
-		// always {
-  //       sh '''
-  //           docker rmi ${IMAGE_NAME}:${BUILD_NUMBER} || true
-  //           docker rmi ${IMAGE_NAME}:latest || true
-  //           docker image prune -f
-  //       '''
-		// }
+		always {
+        sh '''
+            docker rmi ${IMAGE_NAME}:${BUILD_NUMBER} || true
+            docker rmi ${IMAGE_NAME}:latest || true
+            docker image prune -f
+        '''
+		}
 	   success {
 		echo 'CI pipeline completed Successfully'
 	   }
