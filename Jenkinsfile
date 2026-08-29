@@ -2,6 +2,10 @@ pipeline {
 
     agent any
 
+	environment {
+        IMAGE_NAME = 'amitmahendrakar/myapp'
+    }
+
     stages {
 
         stage('Build') {
@@ -21,9 +25,26 @@ pipeline {
 	stage('Docker Build'){
 	    steps {
 		echo 'Building Docker Image'
-		sh 'docker build -t myapp:${BUILD_NUMBER} .'
-            }
+		sh '''
+			docker build -t IMAGE_NAME:${BUILD_NUMBER} .
+			docker tag ${IMAGE_NAME}:${BUILD_NUMBER} ${IMAGE_NAME}:latest
+		'''
+        }
 	}
+
+	 stage('Push to Docker Hub') {
+            steps {
+                withDockerRegistry(
+                    credentialsId: 'dockerhub-credentials',
+                    url: 'https://index.docker.io/v1/'
+                ) {
+                    sh '''
+                        docker push ${DOCKER_IMAGE}:${BUILD_NUMBER}
+                        docker push ${DOCKER_IMAGE}:latest
+                    '''
+                }
+            }
+        }
 
     }
 	post {
