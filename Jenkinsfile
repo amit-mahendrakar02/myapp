@@ -75,7 +75,7 @@ pipeline {
 	}
 
     }
-	// post {
+	 post {
 		// always {
   //       sh '''
   //           docker rmi ${IMAGE_NAME}:${BUILD_NUMBER} || true
