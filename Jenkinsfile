@@ -45,7 +45,20 @@ pipeline {
                 }
             }
         }
+	
+	stage('Deploy to Kubernetes') {
+		steps {
+		echo 'Deploying application to Kubernetes'
+		
+		sh '''
+			kubectl -f apply k8s/deployment.yml
+			kubectl -f apply k8s/service.yml
 
+			kubectl rollout restart deployment/myapp
+			kubectl rollout status deployment/myapp
+		'''
+	}
+	}
 
     }
 	post {

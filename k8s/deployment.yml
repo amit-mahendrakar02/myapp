@@ -19,10 +19,10 @@ spec:
     spec:
       containers:
         - name: myapp
-          image: myapp:1.0
+          image: amitmahendrakar/myapp:latest
 
           ports:
             - containerPort: 8080
 
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
 
