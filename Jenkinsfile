@@ -75,14 +75,14 @@ pipeline {
 	}
 
     }
-	post {
-		always {
-        sh '''
-            docker rmi ${IMAGE_NAME}:${BUILD_NUMBER} || true
-            docker rmi ${IMAGE_NAME}:latest || true
-            docker image prune -f
-        '''
-		}
+	// post {
+		// always {
+  //       sh '''
+  //           docker rmi ${IMAGE_NAME}:${BUILD_NUMBER} || true
+  //           docker rmi ${IMAGE_NAME}:latest || true
+  //           docker image prune -f
+  //       '''
+		// }
 	   success {
 		echo 'CI pipeline completed Successfully'
 	   }
